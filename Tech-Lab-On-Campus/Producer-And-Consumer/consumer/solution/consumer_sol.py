@@ -22,13 +22,12 @@ class mqConsumer(mqConsumerInterface):
         self.m_channel = self.m_connection.channel()
 
         # Establish Channel
-        self.m_exchange = 'RMQ Labs - Calvin/Alexander'
-        self.m_channel.exchange_declare(self.m_exchange)
+        self.m_channel.exchange_declare(self.exchange_name)
         
         #Create the queue if not already present
-        self.m_queue_name = 'RMQ Lab Queue - Calvin/Alexander'
+        self.m_queue_name = self.queue_name
         self.m_channel.queue_declare(queue=self.m_queue_name)
-        self.m_channel.queue_bind(queue=self.m_queue_name, routing_key=self.routing_key, exchange=self.m_exchange)
+        self.m_channel.queue_bind(queue=self.m_queue_name, routing_key=self.routing_key, exchange=self.exchange_name)
         self.m_channel.basic_consume(self.m_queue_name, self.on_message_callback)
 
         pass
@@ -56,6 +55,9 @@ class mqConsumer(mqConsumerInterface):
 
     def startConsuming(self):
         # Print " [*] Waiting for messages. To exit press CTRL+C"
+        print(self.routing_key)
+        print(self.exchange_name)
+        print(self.queue_name)
         print("[*] Waiting for messages. To exit press CTRL+C")
         # Start consuming messages
         self.m_pool.submit(self.consumeBlock)
