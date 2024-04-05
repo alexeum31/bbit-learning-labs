@@ -11,9 +11,8 @@ class mqConsumer(mqConsumerInterface):
         self.routing_key = binding_key
         self.exchange_name = exchange_name
         self.queue_name = queue_name
-        self.m_pool = ThreadPoolExecutor(max_workers=1)
         self.setupRMQConnection()
-        pass
+        
 
     def setupRMQConnection(self) :
         # Set-up Connection to RabbitMQ service
@@ -30,7 +29,6 @@ class mqConsumer(mqConsumerInterface):
         self.m_channel.queue_bind(queue=self.m_queue_name, routing_key=self.routing_key, exchange=self.exchange_name)
         self.m_channel.basic_consume(self.m_queue_name, self.on_message_callback)
 
-        pass
 
     def on_message_callback(
         self, channel, method_frame, header_frame, body
@@ -41,26 +39,17 @@ class mqConsumer(mqConsumerInterface):
 
         #Print message (The message is contained in the body parameter variable)
         print(f"Incoming Data. Method_Frame:{method_frame}\nHeader_Frame:{header_frame}\nBody:{body}")
-        if self.m_message_handler:
-            self.m_message_handler(body)
-
         
         pass
 
-    def consumeBlock(self):
-        try:
-            self.m_channel.start_consuming()
-        except KeyboardInterrupt:
-            self.m_channel.stop_consuming()
 
     def startConsuming(self):
         # Print " [*] Waiting for messages. To exit press CTRL+C"
-        print(self.routing_key)
-        print(self.exchange_name)
-        print(self.queue_name)
         print("[*] Waiting for messages. To exit press CTRL+C")
         # Start consuming messages
-        self.m_pool.submit(self.consumeBlock)
+        self.m_channel.start_consuming()
+
+        #self.m_pool.submit(self.consumeBlock)
         pass
 
     def __del__(self):
