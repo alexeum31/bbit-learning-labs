@@ -55,6 +55,9 @@ class mqConsumer(mqConsumerInterface):
 
     def startConsuming(self):
         # Print " [*] Waiting for messages. To exit press CTRL+C"
+        print(self.routing_key)
+        print(self.exchange_name)
+        print(self.queue_name)
         print("[*] Waiting for messages. To exit press CTRL+C")
         # Start consuming messages
         self.m_pool.submit(self.consumeBlock)
