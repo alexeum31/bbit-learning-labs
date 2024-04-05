@@ -41,7 +41,11 @@ class mqConsumer(mqConsumerInterface):
 
         #Print message (The message is contained in the body parameter variable)
         print(f"Incoming Data. Method_Frame:{method_frame}\nHeader_Frame:{header_frame}\nBody:{body}")
-     
+        if self.m_message_handler:
+            self.m_message_handler(body)
+
+        
+        pass
 
     def consumeBlock(self):
         try:
